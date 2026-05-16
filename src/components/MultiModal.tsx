@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Video, MessageCircle, FileQuestion, Copy, Check, Film, Users, HelpCircle, AlertTriangle } from 'lucide-react';
+import { Video, MessageCircle, FileQuestion, Copy, Check, Film, Users, HelpCircle } from 'lucide-react';
 import { shortVideoScripts as defaultScripts, communityPosts as defaultPosts, quizQuestions as defaultQuiz } from '../data/demoData';
 import { useApp } from '../context/AppContext';
 
@@ -8,7 +8,7 @@ type TabType = 'video' | 'community' | 'quiz';
 export default function MultiModal() {
   const [activeTab, setActiveTab] = useState<TabType>('video');
   const [copiedId, setCopiedId] = useState<string>('');
-  const { videoScripts, communityPosts, useRealApi } = useApp();
+  const { videoScripts, communityPosts } = useApp();
 
   const scripts = videoScripts.length > 0 ? videoScripts : defaultScripts;
   const posts = communityPosts.length > 0 ? communityPosts : defaultPosts;
@@ -28,16 +28,6 @@ export default function MultiModal() {
 
   return (
     <div className="animate-fade-in">
-      {!useRealApi && videoScripts.length === 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex items-center gap-3">
-          <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0" />
-          <div className="text-sm text-amber-800">
-            <p className="font-semibold">当前显示演示数据</p>
-            <p>配置Kimi API Key后，短视频脚本、社群话术将由AI根据书籍内容实时生成。</p>
-          </div>
-        </div>
-      )}
-
       <div className="bg-white rounded-xl shadow-sm p-2 mb-6">
         <div className="flex gap-2">
           {tabs.map(tab => (

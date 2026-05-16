@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { GitGraph, Download, ZoomIn, ZoomOut, AlertTriangle } from 'lucide-react';
+import { GitGraph, Download, ZoomIn, ZoomOut } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { bookOutline } from '../data/demoData';
 
@@ -104,7 +104,7 @@ function renderNode(node: Node, parentX?: number, parentY?: number): React.React
 
 export default function MindMap() {
   const [scale, setScale] = useState(1);
-  const { bookOutline: dynamicOutline, useRealApi } = useApp();
+  const { bookOutline: dynamicOutline } = useApp();
 
   const outline = dynamicOutline || bookOutline;
   const data = generateMindMapData(outline);
@@ -125,16 +125,6 @@ export default function MindMap() {
 
   return (
     <div className="animate-fade-in">
-      {!useRealApi && !dynamicOutline && (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex items-center gap-3">
-          <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0" />
-          <div className="text-sm text-amber-800">
-            <p className="font-semibold">当前显示基于预置数据的思维导图</p>
-            <p>配置Kimi API Key后，思维导图将根据AI拆书结果动态生成。</p>
-          </div>
-        </div>
-      )}
-
       <div className="bg-white rounded-2xl shadow-lg p-6">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">

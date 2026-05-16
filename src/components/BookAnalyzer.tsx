@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { BookOpen, ChevronDown, ChevronUp, Lightbulb, HelpCircle, Star, AlertTriangle } from 'lucide-react';
+import { BookOpen, ChevronDown, ChevronUp, Lightbulb, HelpCircle, Star } from 'lucide-react';
 import { bookOutline as defaultOutline } from '../data/demoData';
 import { useApp } from '../context/AppContext';
 
 export default function BookAnalyzer() {
-  const { bookOutline, useRealApi } = useApp();
+  const { bookOutline } = useApp();
   const [expandedDays, setExpandedDays] = useState<number[]>([1]);
 
   const outline = bookOutline || defaultOutline;
@@ -17,16 +17,6 @@ export default function BookAnalyzer() {
 
   return (
     <div className="animate-fade-in">
-      {!useRealApi && (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex items-center gap-3">
-          <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0" />
-          <div className="text-sm text-amber-800">
-            <p className="font-semibold">当前显示演示数据</p>
-            <p>在「上传」页配置Kimi API Key后，AI拆书将调用真实大模型生成内容。</p>
-          </div>
-        </div>
-      )}
-
       {/* 预告篇 */}
       <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 mb-6 border border-amber-200">
         <div className="flex items-center gap-2 mb-4">

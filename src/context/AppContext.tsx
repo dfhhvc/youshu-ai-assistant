@@ -1,9 +1,7 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
-import type { DemoBook, BookOutline, ReadingDraft, ShortVideoScript, CommunityPost } from '../types';
+import React, { createContext, useContext, useState } from 'react';
+import type { BookOutline, ReadingDraft, ShortVideoScript, CommunityPost, DemoBook } from '../types';
 
 interface AppState {
-  apiKey: string;
-  setApiKey: (key: string) => void;
   analyzedBook: DemoBook | null;
   setAnalyzedBook: (book: DemoBook | null) => void;
   bookOutline: BookOutline | null;
@@ -18,7 +16,6 @@ interface AppState {
   setIsAnalyzing: (v: boolean) => void;
   analysisProgress: number;
   setAnalysisProgress: (v: number | ((prev: number) => number)) => void;
-  useRealApi: boolean;
   bookContent: string;
   setBookContent: (v: string) => void;
 }
@@ -26,7 +23,6 @@ interface AppState {
 const AppContext = createContext<AppState | null>(null);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [apiKey, setApiKey] = useState(() => localStorage.getItem('youshu_api_key') || '');
   const [analyzedBook, setAnalyzedBook] = useState<DemoBook | null>(null);
   const [bookOutline, setBookOutline] = useState<BookOutline | null>(null);
   const [readingDrafts, setReadingDrafts] = useState<ReadingDraft[]>([]);
@@ -36,17 +32,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [analysisProgress, setAnalysisProgress] = useState(0);
   const [bookContent, setBookContent] = useState('');
 
-  const handleSetApiKey = useCallback((key: string) => {
-    setApiKey(key);
-    if (key) localStorage.setItem('youshu_api_key', key);
-    else localStorage.removeItem('youshu_api_key');
-  }, []);
-
-  const useRealApi = !!apiKey;
-
   return (
     <AppContext.Provider value={{
-      apiKey, setApiKey: handleSetApiKey,
       analyzedBook, setAnalyzedBook,
       bookOutline, setBookOutline,
       readingDrafts, setReadingDrafts,
@@ -54,7 +41,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       communityPosts, setCommunityPosts,
       isAnalyzing, setIsAnalyzing,
       analysisProgress, setAnalysisProgress,
-      useRealApi,
       bookContent, setBookContent
     }}>
       {children}

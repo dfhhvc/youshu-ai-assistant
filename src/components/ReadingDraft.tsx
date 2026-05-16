@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { BookOpen, Copy, Check, ChevronLeft, ChevronRight, AlertTriangle } from 'lucide-react';
+import { BookOpen, Copy, Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { readingDrafts as defaultDrafts } from '../data/demoData';
 import { useApp } from '../context/AppContext';
 
 export default function ReadingDraft() {
   const [currentDay, setCurrentDay] = useState(1);
   const [copied, setCopied] = useState(false);
-  const { readingDrafts, useRealApi } = useApp();
+  const { readingDrafts } = useApp();
 
   const drafts = readingDrafts.length > 0 ? readingDrafts : defaultDrafts;
   const draft = drafts.find(d => d.day === currentDay);
@@ -23,16 +23,6 @@ export default function ReadingDraft() {
 
   return (
     <div className="animate-fade-in">
-      {!useRealApi && readingDrafts.length === 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex items-center gap-3">
-          <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0" />
-          <div className="text-sm text-amber-800">
-            <p className="font-semibold">当前显示演示领读稿</p>
-            <p>配置Kimi API Key后，领读稿将由AI实时生成，内容更丰富、更个性化。</p>
-          </div>
-        </div>
-      )}
-
       <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
         <div className="flex items-center justify-between">
           <button
@@ -78,7 +68,7 @@ export default function ReadingDraft() {
             <div>
               <h3 className="font-bold">Day {draft.day}：{draft.title}</h3>
               <p className="text-xs text-blue-100">
-                {useRealApi && readingDrafts.length > 0 ? 'AI实时生成' : '预置演示稿'}
+                {readingDrafts.length > 0 ? 'AI实时生成' : '预置演示稿'}
               </p>
             </div>
           </div>

@@ -14,7 +14,7 @@ type TabType = 'upload' | 'outline' | 'draft' | 'mindmap' | 'multimodal' | 'effi
 
 function AppContent() {
   const [activeTab, setActiveTab] = useState<TabType>('upload');
-  const { analyzedBook, setAnalyzedBook, useRealApi } = useApp();
+  const { analyzedBook, setAnalyzedBook } = useApp();
 
   const handleAnalyze = async (book: DemoBook) => {
     setAnalyzedBook(book);
@@ -66,10 +66,8 @@ function AppContent() {
               <h2 className="font-bold text-gray-800">{analyzedBook.title}</h2>
               <p className="text-sm text-gray-600">{analyzedBook.author}</p>
             </div>
-            <span className={`ml-auto px-3 py-1 rounded-full text-xs font-semibold ${
-              useRealApi ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
-            }`}>
-              {useRealApi ? '真实AI生成' : '演示数据'}
+            <span className="ml-auto bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold">
+              真实AI生成
             </span>
           </div>
         )}
@@ -84,7 +82,7 @@ function AppContent() {
 
       <footer className="bg-white border-t mt-12">
         <div className="max-w-6xl mx-auto px-6 py-6 text-center text-sm text-gray-400">
-          <p>有书AI拆书助手 · {useRealApi ? '真实Kimi API驱动' : '演示版（配置API Key后启用真实AI）'}</p>
+          <p>有书AI拆书助手 · 真实Kimi API驱动</p>
         </div>
       </footer>
     </div>
