@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { BookOpen, FileText, GitGraph, Layers, BarChart3, Upload } from 'lucide-react';
+import { AppProvider, useApp } from './context/AppContext';
 import Header from './components/Header';
 import UploadZone from './components/UploadZone';
 import BookAnalyzer from './components/BookAnalyzer';
@@ -11,11 +12,11 @@ import type { DemoBook } from './types';
 
 type TabType = 'upload' | 'outline' | 'draft' | 'mindmap' | 'multimodal' | 'efficiency';
 
-function App() {
+function AppContent() {
   const [activeTab, setActiveTab] = useState<TabType>('upload');
-  const [analyzedBook, setAnalyzedBook] = useState<DemoBook | null>(null);
+  const { analyzedBook, setAnalyzedBook, useRealApi } = useApp();
 
-  const handleAnalyze = (book: DemoBook) => {
+  const handleAnalyze = async (book: DemoBook) => {
     setAnalyzedBook(book);
     setActiveTab('outline');
   };
@@ -33,7 +34,6 @@ function App() {
     <div className="min-h-screen bg-gray-50">
       <Header />
 
-      {/* 标签导航 */}
       <div className="bg-white shadow-sm sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex overflow-x-auto">
@@ -58,7 +58,6 @@ function App() {
         </div>
       </div>
 
-      {/* 内容区域 */}
       <main className="max-w-6xl mx-auto px-6 py-6">
         {analyzedBook && activeTab !== 'upload' && activeTab !== 'efficiency' && (
           <div className="bg-blue-50 rounded-xl p-4 mb-6 flex items-center gap-4">
@@ -67,8 +66,10 @@ function App() {
               <h2 className="font-bold text-gray-800">{analyzedBook.title}</h2>
               <p className="text-sm text-gray-600">{analyzedBook.author}</p>
             </div>
-            <span className="ml-auto bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold">
-              AI拆书完成
+            <span className={`ml-auto px-3 py-1 rounded-full text-xs font-semibold ${
+              useRealApi ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
+            }`}>
+              {useRealApi ? '真实AI生成' : '演示数据'}
             </span>
           </div>
         )}
@@ -81,14 +82,20 @@ function App() {
         {activeTab === 'efficiency' && <EfficiencyBoard />}
       </main>
 
-      {/* 页脚 */}
       <footer className="bg-white border-t mt-12">
         <div className="max-w-6xl mx-auto px-6 py-6 text-center text-sm text-gray-400">
-          <p>有书AI拆书助手 · 面试演示版</p>
-          <p className="mt-1">React + TypeScript + Vite + Tailwind CSS</p>
+          <p>有书AI拆书助手 · {useRealApi ? '真实Kimi API驱动' : '演示版（配置API Key后启用真实AI）'}</p>
         </div>
       </footer>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <AppProvider>
+      <AppContent />
+    </AppProvider>
   );
 }
 

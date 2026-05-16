@@ -1,9 +1,13 @@
 import { useState } from 'react';
-import { BookOpen, ChevronDown, ChevronUp, Lightbulb, HelpCircle, Star } from 'lucide-react';
-import { bookOutline } from '../data/demoData';
+import { BookOpen, ChevronDown, ChevronUp, Lightbulb, HelpCircle, Star, AlertTriangle } from 'lucide-react';
+import { bookOutline as defaultOutline } from '../data/demoData';
+import { useApp } from '../context/AppContext';
 
 export default function BookAnalyzer() {
+  const { bookOutline, useRealApi } = useApp();
   const [expandedDays, setExpandedDays] = useState<number[]>([1]);
+
+  const outline = bookOutline || defaultOutline;
 
   const toggleDay = (day: number) => {
     setExpandedDays(prev =>
@@ -13,6 +17,16 @@ export default function BookAnalyzer() {
 
   return (
     <div className="animate-fade-in">
+      {!useRealApi && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex items-center gap-3">
+          <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0" />
+          <div className="text-sm text-amber-800">
+            <p className="font-semibold">当前显示演示数据</p>
+            <p>在「上传」页配置Kimi API Key后，AI拆书将调用真实大模型生成内容。</p>
+          </div>
+        </div>
+      )}
+
       {/* 预告篇 */}
       <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 mb-6 border border-amber-200">
         <div className="flex items-center gap-2 mb-4">
@@ -22,19 +36,19 @@ export default function BookAnalyzer() {
         <div className="space-y-3">
           <div className="bg-white rounded-xl p-4 shadow-sm">
             <p className="text-xs font-semibold text-amber-600 mb-1">核心钩子</p>
-            <p className="text-gray-700">{bookOutline.preview.hook}</p>
+            <p className="text-gray-700">{outline.preview.hook}</p>
           </div>
           <div className="bg-white rounded-xl p-4 shadow-sm">
             <p className="text-xs font-semibold text-amber-600 mb-1">痛点共鸣</p>
-            <p className="text-gray-700">{bookOutline.preview.painPoint}</p>
+            <p className="text-gray-700">{outline.preview.painPoint}</p>
           </div>
           <div className="bg-white rounded-xl p-4 shadow-sm">
             <p className="text-xs font-semibold text-amber-600 mb-1">全书价值</p>
-            <p className="text-gray-700">{bookOutline.preview.value}</p>
+            <p className="text-gray-700">{outline.preview.value}</p>
           </div>
           <div className="bg-white rounded-xl p-4 shadow-sm">
             <p className="text-xs font-semibold text-amber-600 mb-1">阅读承诺</p>
-            <p className="text-gray-700">{bookOutline.preview.promise}</p>
+            <p className="text-gray-700">{outline.preview.promise}</p>
           </div>
         </div>
       </div>
@@ -43,10 +57,10 @@ export default function BookAnalyzer() {
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-4">
           <BookOpen className="w-5 h-5 text-blue-600" />
-          <h3 className="font-bold text-blue-800 text-lg">正文篇（{bookOutline.chapters.length}天）</h3>
+          <h3 className="font-bold text-blue-800 text-lg">正文篇（{outline.chapters.length}天）</h3>
         </div>
         <div className="space-y-3">
-          {bookOutline.chapters.map(chapter => (
+          {outline.chapters.map(chapter => (
             <div
               key={chapter.day}
               className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
@@ -125,19 +139,19 @@ export default function BookAnalyzer() {
         <div className="space-y-3">
           <div className="bg-white rounded-xl p-4 shadow-sm">
             <p className="text-xs font-semibold text-green-600 mb-1">全书回顾</p>
-            <p className="text-gray-700">{bookOutline.summary.review}</p>
+            <p className="text-gray-700">{outline.summary.review}</p>
           </div>
           <div className="bg-white rounded-xl p-4 shadow-sm">
             <p className="text-xs font-semibold text-green-600 mb-1">核心转变</p>
-            <p className="text-gray-700">{bookOutline.summary.transformation}</p>
+            <p className="text-gray-700">{outline.summary.transformation}</p>
           </div>
           <div className="bg-white rounded-xl p-4 shadow-sm">
             <p className="text-xs font-semibold text-green-600 mb-1">行动号召</p>
-            <p className="text-gray-700">{bookOutline.summary.callToAction}</p>
+            <p className="text-gray-700">{outline.summary.callToAction}</p>
           </div>
           <div className="bg-white rounded-xl p-4 shadow-sm">
             <p className="text-xs font-semibold text-green-600 mb-1">延伸阅读</p>
-            <p className="text-gray-700">{bookOutline.summary.furtherReading}</p>
+            <p className="text-gray-700">{outline.summary.furtherReading}</p>
           </div>
         </div>
       </div>

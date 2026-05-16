@@ -1,12 +1,18 @@
 import { useState } from 'react';
-import { Video, MessageCircle, FileQuestion, Copy, Check, Film, Users, HelpCircle } from 'lucide-react';
-import { shortVideoScripts, communityPosts, quizQuestions } from '../data/demoData';
+import { Video, MessageCircle, FileQuestion, Copy, Check, Film, Users, HelpCircle, AlertTriangle } from 'lucide-react';
+import { shortVideoScripts as defaultScripts, communityPosts as defaultPosts, quizQuestions as defaultQuiz } from '../data/demoData';
+import { useApp } from '../context/AppContext';
 
 type TabType = 'video' | 'community' | 'quiz';
 
 export default function MultiModal() {
   const [activeTab, setActiveTab] = useState<TabType>('video');
   const [copiedId, setCopiedId] = useState<string>('');
+  const { videoScripts, communityPosts, useRealApi } = useApp();
+
+  const scripts = videoScripts.length > 0 ? videoScripts : defaultScripts;
+  const posts = communityPosts.length > 0 ? communityPosts : defaultPosts;
+  const quiz = defaultQuiz;
 
   const handleCopy = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
@@ -22,7 +28,16 @@ export default function MultiModal() {
 
   return (
     <div className="animate-fade-in">
-      {/* 标签切换 */}
+      {!useRealApi && videoScripts.length === 0 && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex items-center gap-3">
+          <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0" />
+          <div className="text-sm text-amber-800">
+            <p className="font-semibold">当前显示演示数据</p>
+            <p>配置Kimi API Key后，短视频脚本、社群话术将由AI根据书籍内容实时生成。</p>
+          </div>
+        </div>
+      )}
+
       <div className="bg-white rounded-xl shadow-sm p-2 mb-6">
         <div className="flex gap-2">
           {tabs.map(tab => (
@@ -42,10 +57,9 @@ export default function MultiModal() {
         </div>
       </div>
 
-      {/* 短视频脚本 */}
       {activeTab === 'video' && (
         <div className="space-y-4">
-          {shortVideoScripts.map((script, idx) => (
+          {scripts.map((script, idx) => (
             <div key={idx} className="bg-white rounded-2xl shadow-lg overflow-hidden">
               <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-6 py-4">
                 <div className="flex items-center gap-3">
@@ -85,10 +99,9 @@ export default function MultiModal() {
         </div>
       )}
 
-      {/* 社群话术 */}
       {activeTab === 'community' && (
         <div className="space-y-4">
-          {communityPosts.map((post, idx) => (
+          {posts.map((post, idx) => (
             <div key={idx} className="bg-white rounded-2xl shadow-lg p-6">
               <div className="flex items-center gap-2 mb-4">
                 <div className="bg-green-100 text-green-700 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">
@@ -138,40 +151,39 @@ export default function MultiModal() {
         </div>
       )}
 
-      {/* 测试题 */}
       {activeTab === 'quiz' && (
         <div className="space-y-4">
-          {quizQuestions.map((quiz, idx) => (
+          {quiz.map((q, idx) => (
             <div key={idx} className="bg-white rounded-2xl shadow-lg p-6">
               <div className="flex items-center gap-2 mb-4">
                 <div className="bg-indigo-100 text-indigo-700 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">
-                  {quiz.day}
+                  {q.day}
                 </div>
-                <span className="text-xs text-gray-500">Day {quiz.day}</span>
+                <span className="text-xs text-gray-500">Day {q.day}</span>
               </div>
 
-              <p className="text-gray-800 font-medium mb-4">{quiz.question}</p>
+              <p className="text-gray-800 font-medium mb-4">{q.question}</p>
 
               <div className="space-y-2">
-                {quiz.options.map((option, oIdx) => (
+                {q.options.map((option, oIdx) => (
                   <div
                     key={oIdx}
                     className={`p-3 rounded-lg border-2 transition-all ${
-                      oIdx === quiz.answer
+                      oIdx === q.answer
                         ? 'border-green-400 bg-green-50'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
                     <div className="flex items-center gap-3">
                       <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                        oIdx === quiz.answer
+                        oIdx === q.answer
                           ? 'bg-green-500 text-white'
                           : 'bg-gray-200 text-gray-600'
                       }`}>
                         {String.fromCharCode(65 + oIdx)}
                       </span>
                       <span className="text-gray-700">{option}</span>
-                      {oIdx === quiz.answer && (
+                      {oIdx === q.answer && (
                         <span className="ml-auto text-xs text-green-600 font-semibold">正确答案</span>
                       )}
                     </div>
